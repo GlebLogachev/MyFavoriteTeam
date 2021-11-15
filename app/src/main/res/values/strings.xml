@@ -1,3 +1,26 @@
 <resources>
     <string name="app_name">MyFavoriteTeam</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="someone_broke_everything">Какой-то сверхразум всё сломал</string>
+    <string name="we_will_try_to_fix">Постараемся быстро починить</string>
+    <string name="try_again">Попробовать снова</string>
+    <string name="full_name">%1$s %2$s</string>
+    <string name="all_departments_name">Все</string>
+    <string name="android_name">Android</string>
+    <string name="ios_name">IOS</string>
+    <string name="design_name">Designers</string>
+    <string name="management_name">Management</string>
+    <string name="qa_name">QA</string>
+    <string name="back_office_name">Back Office</string>
+    <string name="frontend_name">Frontend</string>
+    <string name="hr_name">HR</string>
+    <string name="pr_name">PR</string>
+    <string name="backend_name">Backend</string>
+    <string name="support_name">Supports</string>
+    <string name="analytics_name">Analytics</string>
+    <string name="sorting">Сортировка</string>
+    <string name="alphabetically">По алфавиту</string>
+    <string name="by_birthday">По дню рождения</string>
+    <string name="empty_search_result">Мы никого не нашли</string>
+    <string name="empty_search_result_description">Попробуй скорректировать запрос</string>
 </resources>
