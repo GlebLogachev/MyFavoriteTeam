@@ -10,6 +10,5 @@ class TeamRepositoryImpl @Inject constructor(
 ) : TeamRepository {
     override suspend fun fetchTeamInfo(): List<Employee> {
         return api.fetchTeamInfo().body()?.toDomain()!!
-
     }
 }

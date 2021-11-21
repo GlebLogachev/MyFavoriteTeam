@@ -14,11 +14,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import coil.annotation.ExperimentalCoilApi
 import com.glogachev.myfavoriteteam.ui.employeeList.DepartmentType
 import com.glogachev.myfavoriteteam.ui.employeeList.EmployeeListState
 import com.glogachev.myfavoriteteam.ui.employeeList.SortingTypes
+import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 
+@ExperimentalCoilApi
 @ExperimentalMaterialApi
 @ExperimentalComposeUiApi
 @Composable
@@ -26,6 +29,7 @@ fun EmployeeDisplay(
     navController: NavController,
     state: EmployeeListState.Display,
     modifier: Modifier = Modifier,
+    gson: Gson,
     searchValueListener: (String) -> Unit,
     onTabClick: (DepartmentType) -> Unit,
     selectFilter: (SortingTypes) -> Unit,
@@ -72,7 +76,8 @@ fun EmployeeDisplay(
                     EmployeesList(
                         state = state,
                         refreshList = refreshList,
-                        navController = navController
+                        navController = navController,
+                        gson = gson
                     )
                 }
             }

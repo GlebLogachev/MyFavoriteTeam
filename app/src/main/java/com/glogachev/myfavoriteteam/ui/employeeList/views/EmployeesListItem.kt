@@ -34,6 +34,7 @@ import java.time.format.DateTimeFormatter
 fun EmployeesListItem(
     employee: Employee,
     isFirstItem: Boolean,
+    gson: Gson,
     navController: NavController,
     state: EmployeeListState.Display
 ) {
@@ -46,14 +47,15 @@ fun EmployeesListItem(
         modifier = Modifier
             .fillMaxSize()
             .clickable {
-                val employeeJson = Gson().toJson(
-                    employee.copy(
-                        avatarUrl = URLEncoder.encode(
-                            employee.avatarUrl,
-                            StandardCharsets.UTF_8.toString()
-                        ),
+                val employeeJson =
+                    gson.toJson(
+                        employee.copy(
+                            avatarUrl = URLEncoder.encode(
+                                employee.avatarUrl,
+                                StandardCharsets.UTF_8.toString()
+                            ),
+                        )
                     )
-                )
                 navController.navigate(Screen.Details.passEmployee(employee = employeeJson))
             }
             .padding(
@@ -66,6 +68,7 @@ fun EmployeesListItem(
                 builder = {
                     crossfade(true)
                     placeholder(R.drawable.ic_goose_plug)
+                    error(R.drawable.nlo_error)
                 }
             ),
             contentDescription = null,

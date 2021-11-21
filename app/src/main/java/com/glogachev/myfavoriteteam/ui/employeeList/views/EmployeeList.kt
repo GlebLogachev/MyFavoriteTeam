@@ -12,6 +12,7 @@ import com.glogachev.myfavoriteteam.ui.theme.MyFavoriteTeamTheme
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.google.gson.Gson
 
 @ExperimentalCoilApi
 @ExperimentalMaterialApi
@@ -19,6 +20,7 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 fun EmployeesList(
     modifier: Modifier = Modifier,
     state: EmployeeListState.Display,
+    gson : Gson,
     refreshList: () -> Unit,
     navController: NavController
 ) {
@@ -41,6 +43,7 @@ fun EmployeesList(
                 EmployeesListItem(
                     employee = employee,
                     isFirstItem = index == 0,
+                    gson = gson,
                     navController = navController,
                     state = state
                 )

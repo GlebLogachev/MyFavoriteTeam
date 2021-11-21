@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.glogachev.myfavoriteteam.ui.employeeList.views.EmployeeDisplay
 import com.glogachev.myfavoriteteam.ui.employeeList.views.EmployeeError
+import com.google.gson.Gson
 
 @ExperimentalComposeUiApi
 @ExperimentalMaterialApi
@@ -16,6 +17,7 @@ import com.glogachev.myfavoriteteam.ui.employeeList.views.EmployeeError
 fun EmployeeListScreen(
     navController: NavController,
     employeesViewModel: EmployeeListViewModel,
+    gson: Gson,
     modifier: Modifier = Modifier
 ) {
     val viewState = employeesViewModel.state.collectAsState()
@@ -31,6 +33,7 @@ fun EmployeeListScreen(
                 navController = navController,
                 state = state,
                 modifier = modifier,
+                gson = gson,
                 { employeesViewModel.obtainEvent(EmployeeListEvent.SearchValueChanged(it)) },
                 { employeesViewModel.obtainEvent(EmployeeListEvent.SelectTab(it)) },
                 { employeesViewModel.obtainEvent(EmployeeListEvent.SelectFilter(it)) },
