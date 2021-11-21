@@ -8,13 +8,17 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,20 +32,41 @@ import androidx.navigation.NavController
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.glogachev.myfavoriteteam.R
-import com.glogachev.myfavoriteteam.domain.model.Employee
 import com.glogachev.myfavoriteteam.ui.theme.MyFavoriteTeamTheme
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 
 
 @ExperimentalCoilApi
 @Composable
 fun DetailsScreen(
     navController: NavController,
-    employee: Employee
+    employeeDetailsViewModel: EmployeeDetailsViewModel,
+    employeeString: String
+) {
+    val viewState = employeeDetailsViewModel.state.collectAsState()
+    when (val state = viewState.value) {
+        is EmployeeDetailsState.Display -> EmployeeDetailsContent(
+            state = state,
+            navController = navController
+        )
+        EmployeeDetailsState.Loading -> {
+            Loading()
+        }
+    }
+
+    LaunchedEffect(key1 = viewState, block = {
+        employeeDetailsViewModel.obtainEvent(event = EmployeeDetailsEvent.EnterScreen(employeeString = employeeString))
+    })
+}
+
+@Composable
+fun EmployeeDetailsContent(
+    state: EmployeeDetailsState.Display,
+    navController: NavController,
 ) {
     val context = LocalContext.current
-    // Log.d("moon",employee.toString())
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -68,11 +93,12 @@ fun DetailsScreen(
         }
         Image(
             painter = rememberImagePainter(
-                data = employee.avatarUrl,
+                data = state.employee.avatarUrl,
                 builder = {
                     crossfade(true)
                     placeholder(R.drawable.ic_goose_plug)
-                }
+                    error(R.drawable.nlo_error)
+                },
             ),
             contentDescription = null,
             modifier = Modifier
@@ -88,13 +114,13 @@ fun DetailsScreen(
             horizontalArrangement = Arrangement.Center
         ) {
             Text(
-                text = employee.firstName + employee.lastName,
+                text = "${state.employee.firstName}  ${state.employee.lastName}",
                 color = MyFavoriteTeamTheme.colors.primaryText,
                 style = MyFavoriteTeamTheme.typography.bold24,
                 modifier = Modifier.alignByBaseline()
             )
             Text(
-                text = employee.userTag.lowercase(),
+                text = state.employee.userTag.lowercase(),
                 color = MyFavoriteTeamTheme.colors.secondaryText,
                 style = MyFavoriteTeamTheme.typography.regular17,
                 modifier = Modifier
@@ -104,7 +130,7 @@ fun DetailsScreen(
         }
 
         Text(
-            text = stringResource(id = employee.department.nameResId),
+            text = stringResource(id = state.employee.department.nameResId),
             color = MyFavoriteTeamTheme.colors.descriptionText,
             style = MyFavoriteTeamTheme.typography.regular13,
             modifier = Modifier.padding(top = 12.dp, bottom = 24.dp)
@@ -127,8 +153,8 @@ fun DetailsScreen(
                     ),
                     contentDescription = null
                 )
-                val birthday = LocalDate.parse(employee.birthdayStr)
-                    .format(DateTimeFormatter.ofPattern("d MMM yyyy"))
+                val birthday = state.employee.birthday
+                    .format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
                     .replace(".", "")
 
                 Text(
@@ -138,6 +164,15 @@ fun DetailsScreen(
                     modifier = Modifier.padding(start = 14.dp)
 
                 )
+                Spacer(modifier = Modifier.weight(1F))
+
+                val years =
+                    ChronoUnit.YEARS.between(state.employee.birthday, LocalDate.now()).toString()
+                Text(
+                    text = years,
+                    color = MyFavoriteTeamTheme.colors.secondaryText,
+                    style = MyFavoriteTeamTheme.typography.medium16,
+                )
             }
 
             Row(
@@ -146,7 +181,7 @@ fun DetailsScreen(
                     .padding(top = 30.dp)
                     .clickable {
                         val intent =
-                            Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + employee.phone))
+                            Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + state.employee.phone))
                         startActivity(context, intent, null)
                     }
                     .padding(top = 20.dp, start = 16.dp, end = 20.dp, bottom = 20.dp),
@@ -159,7 +194,7 @@ fun DetailsScreen(
                     contentDescription = null
                 )
                 Text(
-                    text = employee.phone,
+                    text = state.employee.phone,
                     color = MyFavoriteTeamTheme.colors.descriptionText,
                     style = MyFavoriteTeamTheme.typography.medium16,
                     modifier = Modifier.padding(start = 14.dp)
@@ -167,8 +202,17 @@ fun DetailsScreen(
             }
         }
 
-
     }
 }
 
+@Composable
+fun Loading() {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        CircularProgressIndicator()
+    }
+}
 

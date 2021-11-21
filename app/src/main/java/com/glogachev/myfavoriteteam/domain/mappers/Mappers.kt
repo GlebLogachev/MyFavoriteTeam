@@ -4,6 +4,7 @@ import com.glogachev.myfavoriteteam.data.models.EmployeeNW
 import com.glogachev.myfavoriteteam.data.models.TeamNW
 import com.glogachev.myfavoriteteam.domain.model.Employee
 import com.glogachev.myfavoriteteam.ui.employeeList.DepartmentType
+import java.time.LocalDate
 
 fun TeamNW.toDomain(): List<Employee> {
     return employees
@@ -15,7 +16,7 @@ fun TeamNW.toDomain(): List<Employee> {
 fun EmployeeNW.toDomain(): Employee {
     return Employee(
         avatarUrl = avatarUrl,
-        birthdayStr = birthday,
+        birthday = birthday.toLocalDate(),
         department = department.toDepartmentType(),
         firstName = firstName,
         id = id,
@@ -42,4 +43,8 @@ private fun String.toDepartmentType(): DepartmentType {
         DepartmentType.ANALYTICS.name.lowercase() -> DepartmentType.ANALYTICS
         else -> DepartmentType.ANDROID
     }
+}
+
+private fun String.toLocalDate(): LocalDate {
+    return LocalDate.parse(this)
 }

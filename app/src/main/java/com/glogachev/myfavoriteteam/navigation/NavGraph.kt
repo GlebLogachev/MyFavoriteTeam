@@ -9,12 +9,16 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.glogachev.myfavoriteteam.domain.model.Employee
+import coil.annotation.ExperimentalCoilApi
+import com.glogachev.myfavoriteteam.domain.model.LocalDateAdapter
 import com.glogachev.myfavoriteteam.ui.detail.DetailsScreen
+import com.glogachev.myfavoriteteam.ui.detail.EmployeeDetailsViewModel
 import com.glogachev.myfavoriteteam.ui.employeeList.EmployeeListScreen
 import com.glogachev.myfavoriteteam.ui.employeeList.EmployeeListViewModel
-import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import java.time.LocalDate
 
+@ExperimentalCoilApi
 @ExperimentalMaterialApi
 @ExperimentalComposeUiApi
 @Composable
@@ -29,9 +33,14 @@ fun SetupNavGraph(
             route = Screen.List.route
         ) {
             val employeeViewModel = hiltViewModel<EmployeeListViewModel>()
+            val gson =
+                GsonBuilder()
+                    .registerTypeAdapter(LocalDate::class.java, LocalDateAdapter())
+                    .create()
             EmployeeListScreen(
                 navController = navController,
-                employeesViewModel = employeeViewModel
+                employeesViewModel = employeeViewModel,
+                gson = gson
             )
         }
         composable(
@@ -43,10 +52,11 @@ fun SetupNavGraph(
             )
         ) { backStackEntry ->
             backStackEntry.arguments?.getString(DETAIL_ARGUMENT_KEY)?.let { json ->
-                val employee = Gson().fromJson<Employee>(json, Employee::class.java)
+                val employeeDetailsViewModel = hiltViewModel<EmployeeDetailsViewModel>()
                 DetailsScreen(
                     navController = navController,
-                    employee = employee
+                    employeeDetailsViewModel = employeeDetailsViewModel,
+                    employeeString = json
                 )
             }
 
